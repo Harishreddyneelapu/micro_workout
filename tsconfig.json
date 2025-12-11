@@ -22,6 +22,10 @@
       "@/*": ["./src/*"]
     }
   },
+   "ts-node": {
+    "esm": true,
+    "experimentalSpecifierResolution": "node"
+  },
   "include": [
     "next-env.d.ts",
     "**/*.ts",
@@ -29,6 +33,6 @@
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts",
     "**/*.mts"
-  ],
+, "prisma/seed.js", "prisma/client.js"  ],
   "exclude": ["node_modules"]
 }

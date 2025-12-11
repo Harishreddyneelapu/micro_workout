@@ -1,0 +1,113 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id            String           @id @default(cuid())
+  name          String?
+  email         String?          @unique
+  emailVerified DateTime?
+  passwordHash  String?
+  createdAt     DateTime         @default(now())
+  preferences   UserPreference?
+  workoutLogs   WorkoutLog[]
+  accounts      Account[]
+  sessions      Session[]
+}
+
+model UserPreference {
+  id           String  @id @default(cuid())
+  user         User    @relation(fields: [userId], references: [id])
+  userId       String  @unique
+  difficulty   String?
+  targetMuscle String?
+  equipment    String?
+}
+
+model Workout {
+  id              String            @id @default(cuid())
+  name            String
+  description     String?
+  difficulty      String
+  targetMuscle    String
+  durationMinutes Int
+  equipment       String?
+  videoUrl        String?
+  createdAt       DateTime          @default(now())
+  workoutLogs     WorkoutLog[]
+  exercises       WorkoutExercise[]
+}
+
+model Exercise {
+  id           String             @id @default(cuid())
+  name         String
+  instructions String?
+  equipment    String?
+  muscleGroup  String?
+  createdAt    DateTime           @default(now())
+  workoutItems WorkoutExercise[]
+}
+
+model WorkoutExercise {
+  id              String   @id @default(cuid())
+  workout         Workout  @relation(fields: [workoutId], references: [id])
+  workoutId       String
+  exercise        Exercise @relation(fields: [exerciseId], references: [id])
+  exerciseId      String
+  orderIndex      Int
+  durationSeconds Int?
+  reps            Int?
+  notes           String?
+
+  @@unique([workoutId, exerciseId, orderIndex])
+}
+
+
+model WorkoutLog {
+  id          String   @id @default(cuid())
+  user        User     @relation(fields: [userId], references: [id])
+  userId      String
+  workout     Workout  @relation(fields: [workoutId], references: [id])
+  workoutId   String
+  completedAt DateTime @default(now())
+}
+
+/// NextAuth adapter models
+model Account {
+  id                 String  @id @default(cuid())
+  userId             String
+  type               String
+  provider           String
+  providerAccountId  String
+  refresh_token      String? 
+  access_token       String?
+  expires_at         Int?
+  token_type         String?
+  scope              String?
+  id_token           String?
+  session_state      String?
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id])
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
