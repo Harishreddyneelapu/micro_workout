@@ -1,6 +1,6 @@
 -- CreateTable
 CREATE TABLE "User" (
-    "id" TEXT NOT NULL,
+    "id" UUID NOT NULL,
     "name" TEXT,
     "email" TEXT,
     "emailVerified" TIMESTAMP(3),
@@ -12,8 +12,8 @@ CREATE TABLE "User" (
 
 -- CreateTable
 CREATE TABLE "UserPreference" (
-    "id" TEXT NOT NULL,
-    "userId" TEXT NOT NULL,
+    "id" UUID NOT NULL,
+    "userId" UUID NOT NULL,
     "difficulty" TEXT,
     "targetMuscle" TEXT,
     "equipment" TEXT,
@@ -23,7 +23,7 @@ CREATE TABLE "UserPreference" (
 
 -- CreateTable
 CREATE TABLE "Workout" (
-    "id" TEXT NOT NULL,
+    "id" UUID NOT NULL,
     "name" TEXT NOT NULL,
     "description" TEXT,
     "difficulty" TEXT NOT NULL,
@@ -38,7 +38,7 @@ CREATE TABLE "Workout" (
 
 -- CreateTable
 CREATE TABLE "Exercise" (
-    "id" TEXT NOT NULL,
+    "id" UUID NOT NULL,
     "name" TEXT NOT NULL,
     "instructions" TEXT,
     "equipment" TEXT,
@@ -50,9 +50,9 @@ CREATE TABLE "Exercise" (
 
 -- CreateTable
 CREATE TABLE "WorkoutExercise" (
-    "id" TEXT NOT NULL,
-    "workoutId" TEXT NOT NULL,
-    "exerciseId" TEXT NOT NULL,
+    "id" UUID NOT NULL,
+    "workoutId" UUID NOT NULL,
+    "exerciseId" UUID NOT NULL,
     "orderIndex" INTEGER NOT NULL,
     "durationSeconds" INTEGER,
     "reps" INTEGER,
@@ -63,9 +63,9 @@ CREATE TABLE "WorkoutExercise" (
 
 -- CreateTable
 CREATE TABLE "WorkoutLog" (
-    "id" TEXT NOT NULL,
-    "userId" TEXT NOT NULL,
-    "workoutId" TEXT NOT NULL,
+    "id" UUID NOT NULL,
+    "userId" UUID NOT NULL,
+    "workoutId" UUID NOT NULL,
     "completedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "WorkoutLog_pkey" PRIMARY KEY ("id")
@@ -73,8 +73,8 @@ CREATE TABLE "WorkoutLog" (
 
 -- CreateTable
 CREATE TABLE "Account" (
-    "id" TEXT NOT NULL,
-    "userId" TEXT NOT NULL,
+    "id" UUID NOT NULL,
+    "userId" UUID NOT NULL,
     "type" TEXT NOT NULL,
     "provider" TEXT NOT NULL,
     "providerAccountId" TEXT NOT NULL,
@@ -91,9 +91,9 @@ CREATE TABLE "Account" (
 
 -- CreateTable
 CREATE TABLE "Session" (
-    "id" TEXT NOT NULL,
+    "id" UUID NOT NULL,
     "sessionToken" TEXT NOT NULL,
-    "userId" TEXT NOT NULL,
+    "userId" UUID NOT NULL,
     "expires" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "Session_pkey" PRIMARY KEY ("id")
@@ -111,6 +111,15 @@ CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "UserPreference_userId_key" ON "UserPreference"("userId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Workout_name_key" ON "Workout"("name");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Exercise_name_key" ON "Exercise"("name");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "WorkoutExercise_workoutId_orderIndex_key" ON "WorkoutExercise"("workoutId", "orderIndex");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Account_provider_providerAccountId_key" ON "Account"("provider", "providerAccountId");

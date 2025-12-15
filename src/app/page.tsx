@@ -1,13 +1,21 @@
-export default function Home() {
+import LogoutButton from "@/components/logout-button";
+import UserMenu from "@/components/user-menu";
+import { getAuthSession } from "@/lib/auth";
+import { redirect } from "next/navigation";
+
+export default async function DashboardPage() {
+  const session = await getAuthSession();
+
+  if (!session) {
+    redirect("/login");
+  }
+
   return (
-    <main className="flex flex-col items-center justify-center h-screen gap-4">
-      <h1 className="text-3xl font-bold">Micro Workout Roulette</h1>
-      <a
-        href="/workouts"
-        className="px-4 py-2 bg-blue-600 text-white rounded-md"
-      >
-        Start Workout
-      </a>
-    </main>
+    <div className="space-y-4">
+      <h1 className="text-2xl font-bold">Dashboard</h1>
+      <div className="flex justify-between"><p>Logged in as {session.user?.email}</p>
+      <LogoutButton /></div>
+      
+    </div>
   );
 }

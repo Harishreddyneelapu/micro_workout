@@ -4,10 +4,16 @@ generator client {
 
 datasource db {
   provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
+
+//////////////////////////////
+// USER MODELS (UUID)
+//////////////////////////////
+
 model User {
-  id            String           @id @default(cuid())
+  id            String           @id @default(uuid()) @db.Uuid
   name          String?
   email         String?          @unique
   emailVerified DateTime?
@@ -20,66 +26,82 @@ model User {
 }
 
 model UserPreference {
-  id           String  @id @default(cuid())
+  id           String  @id @default(uuid()) @db.Uuid
   user         User    @relation(fields: [userId], references: [id])
-  userId       String  @unique
+  userId       String  @unique @db.Uuid
   difficulty   String?
   targetMuscle String?
   equipment    String?
 }
 
+//////////////////////////////
+// WORKOUT MODELS
+//////////////////////////////
+
 model Workout {
-  id              String            @id @default(cuid())
-  name            String
+  id              String             @id @default(uuid()) @db.Uuid
+  name            String             @unique
   description     String?
   difficulty      String
   targetMuscle    String
   durationMinutes Int
   equipment       String?
   videoUrl        String?
-  createdAt       DateTime          @default(now())
+  createdAt       DateTime           @default(now())
+
   workoutLogs     WorkoutLog[]
   exercises       WorkoutExercise[]
 }
 
 model Exercise {
-  id           String             @id @default(cuid())
-  name         String
+  id           String    @id @db.Uuid            // DB already generates UUID
+  name         String    @unique
   instructions String?
   equipment    String?
   muscleGroup  String?
-  createdAt    DateTime           @default(now())
-  workoutItems WorkoutExercise[]
+  createdAt    DateTime  @default(now())
+  items        WorkoutExercise[]
 }
 
 model WorkoutExercise {
-  id              String   @id @default(cuid())
+  id              String   @id @default(uuid()) @db.Uuid
+
   workout         Workout  @relation(fields: [workoutId], references: [id])
-  workoutId       String
+  workoutId       String   @db.Uuid
+
   exercise        Exercise @relation(fields: [exerciseId], references: [id])
-  exerciseId      String
+  exerciseId      String   @db.Uuid
+
   orderIndex      Int
   durationSeconds Int?
   reps            Int?
   notes           String?
 
-  @@unique([workoutId, exerciseId, orderIndex])
+  @@unique([workoutId, orderIndex])
 }
 
+//////////////////////////////
+// WORKOUT LOG
+//////////////////////////////
 
 model WorkoutLog {
-  id          String   @id @default(cuid())
+  id          String   @id @default(uuid()) @db.Uuid
   user        User     @relation(fields: [userId], references: [id])
-  userId      String
+  userId      String   @db.Uuid
+
   workout     Workout  @relation(fields: [workoutId], references: [id])
-  workoutId   String
+  workoutId   String   @db.Uuid
+
   completedAt DateTime @default(now())
 }
 
-/// NextAuth adapter models
+//////////////////////////////
+// NEXTAUTH MODELS (UUID)
+//////////////////////////////
+
 model Account {
-  id                 String  @id @default(cuid())
-  userId             String
+  id                 String  @id @default(uuid()) @db.Uuid
+  userId             String  @db.Uuid
   type               String
   provider           String
   providerAccountId  String
@@ -97,9 +119,9 @@ model Account {
 }
 
 model Session {
-  id           String   @id @default(cuid())
+  id           String   @id @default(uuid()) @db.Uuid
   sessionToken String   @unique
-  userId       String
+  userId       String   @db.Uuid
   expires      DateTime
   user         User     @relation(fields: [userId], references: [id])
 }
