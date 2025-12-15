@@ -1,58 +1,162 @@
-Micro Workout App
+# 💪 Micro Workout Roulette
 
-A simple full-stack fitness app where users can spin to get a random 5–7 minute workout.
-Built with Next.js, Prisma, PostgreSQL, TailwindCSS, and NextAuth.
+A full-stack fitness app that delivers **random 5–7 minute workouts** based on user preferences, with streaks, badges, and weekly analytics.
 
-Features
+Built to demonstrate:
+- Authentication
+- Relational database design
+- Server Actions
+- Analytics queries
+- Gamified UX
 
-Random workout generator
+---
 
-User preferences (difficulty, target muscle, equipment)
+## 🚀 Features
 
-Workout logging
+### 🔐 Authentication
+- Email + Password login (NextAuth Credentials)
+- JWT-based sessions
+- Protected routes via middleware
 
-Weekly summary
+### 🎰 Workout Roulette
+- Random workout selection
+- Filters by:
+  - Difficulty
+  - Target muscle
+  - Equipment
+- Smooth spin animation (Framer Motion)
 
-Authentication (NextAuth)
+### 📊 Weekly Summary
+- Total workouts
+- Total minutes
+- Workouts per day (Bar Chart)
+- Muscle group distribution (Pie Chart)
 
-Tech Stack
+### 🏅 Gamification
+- Current & best streaks
+- Achievement badges:
+  - 3-day streak
+  - 7-day streak
+  - 10 workouts
+  - All muscles trained
+- Confetti celebration on badge unlock 🎉
 
-Next.js (App Router)
+### ⚙️ Preferences
+- Save workout preferences per user
+- Roulette automatically respects preferences
 
-Prisma ORM
+---
 
-PostgreSQL
+## 🧱 Tech Stack
 
-TailwindCSS
+### Frontend
+- **Next.js 16 (App Router)**
+- **TypeScript**
+- **Tailwind CSS**
+- **Framer Motion**
+- **Recharts**
 
-NextAuth
+### Backend
+- **Next.js Server Actions**
+- **Prisma ORM**
+- **PostgreSQL**
 
-PNPM
+### Auth
+- **NextAuth v4**
+- Credentials provider
+- JWT session strategy
 
-Setup
-1. Clone the project
-git clone https://github.com/<your-username>/micro_workout.git
-cd micro-workout-app
+---
 
-2. Install dependencies
+## 🗄️ Database Schema
+
+Key models:
+
+- `User`
+- `UserPreference`
+- `Workout`
+- `Exercise`
+- `WorkoutExercise`
+- `WorkoutLog`
+
+Relationships:
+- User ↔ Preferences (1:1)
+- Workout ↔ Exercise (Many-to-Many)
+- User ↔ WorkoutLog (1:N)
+
+---
+
+## 🧠 Architecture Overview
+
+                                                   ┌──────────────┐
+                                                   │ Browser      │
+                                                   │ (React UI)   │
+                                                   └──────┬───────┘
+                                                          │
+                                                          ▼
+                                             ┌─────────────────────────┐
+                                             │ Next.js App Router      │
+                                             │ • Server Components     │
+                                             │ • Client Components     │
+                                             │ • Server Actions        │
+                                             └──────-──────────────────┘
+                                                          │
+                                                          ▼
+                                             ┌─────────────────────────┐
+                                             │ Authentication          │
+                                             │ NextAuth (JWT)          │
+                                             │ • signIn / signOut      │
+                                             │ • Middleware protection │
+                                             └──────-──────────────────┘
+                                                          │
+                                                          ▼
+                                             ┌─────────────────────────┐
+                                             │ Prisma ORM              │
+                                             │ • Typed DB queries      │
+                                             │ • Relations             │
+                                             └──────-──────────────────┘
+                                                          │
+                                                          ▼
+                                             ┌─────────────────────────┐
+                                             │ PostgreSQL Database     │
+                                             │ • Users                 │
+                                             │ • Workouts              │
+                                             │ • Logs                  │
+                                             │ • Preferences           │
+                                             └─────────────────────────┘
+
+
+## 🔄 Data Flow Example (Roulette)
+
+1. User clicks **SPIN**
+2. Server Action:
+   - Reads user session
+   - Fetches preferences
+   - Filters workouts
+   - Selects random workout
+3. Workout returned to client
+4. User completes workout
+5. Workout logged in DB
+6. Streaks & badges recomputed dynamically
+
+---
+
+## 🧪 Local Development
+
+### 1️⃣ Install dependencies
+```bash
 pnpm install
 
-3. Create a .env file
-   
-DATABASE_URL="your-postgres-url"
+2️⃣ Set environment variables
+DATABASE_URL=postgresql://user:password@localhost:5432/microWorkout
+NEXTAUTH_SECRET=your-secret
+NEXTAUTH_URL=http://localhost:3000
 
-NEXTAUTH_SECRET="your-secret"
+3️⃣ Migrate DB
+npx prisma migrate dev
 
-NEXTAUTH_URL="http://localhost:3000"
+4️⃣ Seed workouts
+npx prisma db seed
 
-5. Run Prisma migrations
-   
-pnpm exec prisma migrate dev
-
-5. Seed the database
-   
-pnpm exec prisma db seed
-
-6. Start the development server
-   
+5️⃣ Run app
 pnpm dev
