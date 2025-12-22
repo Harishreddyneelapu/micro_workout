@@ -1,129 +1,215 @@
 import { prisma } from "../src/lib/prisma";
 
+/**
+ * Incremental seed
+ * Safe to run multiple times
+ */
 async function main() {
-  console.log("🌱 Seeding database...");
-
-  // ---------- CLEANUP (safe for dev) ----------
-  await prisma.workoutExercise.deleteMany();
-  await prisma.workoutLog.deleteMany();
-  await prisma.workout.deleteMany();
-  await prisma.exercise.deleteMany();
+  console.log("🌱 Seeding exercises, workouts, and links...");
 
   // ---------- EXERCISES ----------
-await prisma.exercise.createMany({
+  await prisma.exercise.createMany({
     data: [
       {
         id: crypto.randomUUID(),
-        name: "Push-ups",
-        muscleGroup: "chest",
-        instructions: "Keep your body straight, lower and push up.",
-      },
-      {
-        id: crypto.randomUUID(),
-        name: "Squats",
+        name: "Lunges",
         muscleGroup: "legs",
-        instructions: "Sit back and down, then stand up.",
+        instructions:
+          "Step forward, lower back knee toward floor, then push back. Alternate legs.",
       },
       {
         id: crypto.randomUUID(),
-        name: "Plank",
-        muscleGroup: "core",
-        instructions: "Hold a straight plank position.",
-      },
-      {
-        id: crypto.randomUUID(),
-        name: "Jumping Jacks",
+        name: "Burpees",
         muscleGroup: "full-body",
-        instructions: "Jump while spreading arms and legs.",
+        instructions:
+          "Squat down, kick feet to plank, return to squat, then jump explosively upward.",
       },
       {
         id: crypto.randomUUID(),
-        name: "Mountain Climbers",
+        name: "High Knees",
+        muscleGroup: "full-body",
+        instructions:
+          "Run in place lifting knees toward chest. Keep core tight and land softly.",
+      },
+      {
+        id: crypto.randomUUID(),
+        name: "Glute Bridges",
+        muscleGroup: "legs",
+        instructions:
+          "Lie on back, knees bent. Drive hips upward by squeezing glutes, then lower slowly.",
+      },
+      {
+        id: crypto.randomUUID(),
+        name: "Wall Sit",
+        muscleGroup: "legs",
+        instructions:
+          "Lean against wall with knees at 90°. Hold while keeping back flat.",
+      },
+      {
+        id: crypto.randomUUID(),
+        name: "Bicycle Crunches",
         muscleGroup: "core",
-        instructions: "Run knees toward chest in plank position.",
+        instructions:
+          "Alternate elbow-to-opposite-knee while extending the other leg.",
+      },
+      {
+        id: crypto.randomUUID(),
+        name: "Arm Circles",
+        muscleGroup: "arms",
+        instructions:
+          "Extend arms sideways and make small controlled circles. Reverse halfway.",
       },
     ],
+    skipDuplicates: true,
   });
-
-  const allExercises = await prisma.exercise.findMany();
-
-  const get = (name: string) =>
-    allExercises.find((e) => e.name === name)!;
 
   // ---------- WORKOUTS ----------
-  const hiit = await prisma.workout.create({
-    data: {
-      name: "5-Min Full Body HIIT",
-      difficulty: "hard",
-      targetMuscle: "full-body",
-      durationMinutes: 5,
-      equipment: "none",
-      description: "Quick high-intensity full body workout",
-    },
+  await prisma.workout.createMany({
+    data: [
+      {
+        name: "7-Min Leg Blast",
+        difficulty: "easy",
+        targetMuscle: "legs",
+        durationMinutes: 7,
+        equipment: "none",
+      },
+      {
+        name: "5-Min Cardio Burn",
+        difficulty: "hard",
+        targetMuscle: "full-body",
+        durationMinutes: 5,
+        equipment: "none",
+      },
+      {
+        name: "6-Min Upper Body Quickie",
+        difficulty: "medium",
+        targetMuscle: "arms",
+        durationMinutes: 6,
+        equipment: "none",
+      },
+      {
+        name: "7-Min Core & Cardio",
+        difficulty: "medium",
+        targetMuscle: "core",
+        durationMinutes: 7,
+        equipment: "none",
+      },
+      {
+        name: "5-Min No-Equipment Express",
+        difficulty: "easy",
+        targetMuscle: "full-body",
+        durationMinutes: 5,
+        equipment: "none",
+      },
+    ],
+    skipDuplicates: true,
   });
 
-  const abs = await prisma.workout.create({
-    data: {
-      name: "6-Min Core Burner",
-      difficulty: "medium",
-      targetMuscle: "core",
-      durationMinutes: 6,
-      equipment: "mat",
-      description: "Short intense core workout",
-    },
-  });
+  // ---------- FETCH HELPERS ----------
+  const exercises = await prisma.exercise.findMany();
+  const workouts = await prisma.workout.findMany();
+
+  const getExercise = (name: string) => {
+    const e = exercises.find((x) => x.name === name);
+    if (!e) throw new Error(`Exercise not found: ${name}`);
+    return e;
+  };
+
+  const getWorkout = (name: string) => {
+    const w = workouts.find((x) => x.name === name);
+    if (!w) throw new Error(`Workout not found: ${name}`);
+    return w;
+  };
 
   // ---------- LINK EXERCISES TO WORKOUTS ----------
   await prisma.workoutExercise.createMany({
     data: [
-      // HIIT
+      // 7-Min Leg Blast
       {
-        workoutId: hiit.id,
-        exerciseId: get("Jumping Jacks").id,
+        workoutId: getWorkout("7-Min Leg Blast").id,
+        exerciseId: getExercise("Lunges").id,
         orderIndex: 1,
         durationSeconds: 60,
       },
       {
-        workoutId: hiit.id,
-        exerciseId: get("Push-ups").id,
+        workoutId: getWorkout("7-Min Leg Blast").id,
+        exerciseId: getExercise("Wall Sit").id,
         orderIndex: 2,
-        durationSeconds: 45,
+        durationSeconds: 60,
       },
       {
-        workoutId: hiit.id,
-        exerciseId: get("Squats").id,
+        workoutId: getWorkout("7-Min Leg Blast").id,
+        exerciseId: getExercise("Glute Bridges").id,
         orderIndex: 3,
         durationSeconds: 60,
       },
+
+      // 5-Min Cardio Burn
       {
-        workoutId: hiit.id,
-        exerciseId: get("Mountain Climbers").id,
-        orderIndex: 4,
+        workoutId: getWorkout("5-Min Cardio Burn").id,
+        exerciseId: getExercise("Burpees").id,
+        orderIndex: 1,
+        durationSeconds: 45,
+      },
+      {
+        workoutId: getWorkout("5-Min Cardio Burn").id,
+        exerciseId: getExercise("High Knees").id,
+        orderIndex: 2,
         durationSeconds: 45,
       },
 
-      // CORE
+      // 6-Min Upper Body Quickie
       {
-        workoutId: abs.id,
-        exerciseId: get("Plank").id,
+        workoutId: getWorkout("6-Min Upper Body Quickie").id,
+        exerciseId: getExercise("Arm Circles").id,
         orderIndex: 1,
         durationSeconds: 60,
       },
       {
-        workoutId: abs.id,
-        exerciseId: get("Mountain Climbers").id,
+        workoutId: getWorkout("6-Min Upper Body Quickie").id,
+        exerciseId: getExercise("Push-ups").id,
+        orderIndex: 2,
+        durationSeconds: 45,
+      },
+
+      // 7-Min Core & Cardio
+      {
+        workoutId: getWorkout("7-Min Core & Cardio").id,
+        exerciseId: getExercise("Bicycle Crunches").id,
+        orderIndex: 1,
+        durationSeconds: 60,
+      },
+      {
+        workoutId: getWorkout("7-Min Core & Cardio").id,
+        exerciseId: getExercise("Mountain Climbers").id,
+        orderIndex: 2,
+        durationSeconds: 45,
+      },
+
+      // 5-Min No-Equipment Express
+      {
+        workoutId: getWorkout("5-Min No-Equipment Express").id,
+        exerciseId: getExercise("Jumping Jacks").id,
+        orderIndex: 1,
+        durationSeconds: 60,
+      },
+      {
+        workoutId: getWorkout("5-Min No-Equipment Express").id,
+        exerciseId: getExercise("Burpees").id,
         orderIndex: 2,
         durationSeconds: 45,
       },
     ],
+    skipDuplicates: true,
   });
 
-  console.log("✅ Seed complete");
+  console.log("✅ Seed complete (incremental & safe)");
 }
 
+// ---------- RUN ----------
 main()
   .catch((e) => {
-    console.error(e);
+    console.error("❌ Seed failed:", e);
     process.exit(1);
   })
   .finally(async () => {
