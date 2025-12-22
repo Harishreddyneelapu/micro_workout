@@ -34,7 +34,7 @@ export default function PreferencesPage() {
   }
 
   return (
-    <div className="max-w-lg mx-auto mt-20 space-y-6 border-2 border-gray-300 rounded-xl p-8">
+    <div className="max-w-lg mx-auto mt-20 space-y-6 border-2 border-gray-300 rounded-xl p-8 backdrop-blur-3xl">
       <h1 className="text-3xl font-bold text-center">
         ⚙️ Preferences
       </h1>

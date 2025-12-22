@@ -9,15 +9,6 @@ type Props = {
   finalIndex: number | null;
 };
 
-// const SEGMENTS = [
-//   { label: "Easy", color: "#22c55e" },
-//   { label: "Medium", color: "#eab308" },
-//   { label: "Hard", color: "#ef4444" },
-//   { label: "Full", color: "#6366f1" },
-//   { label: "Cardio", color: "#3b82f6" },
-//   { label: "Random", color: "#9ca3af" },
-// ];
-
 export function RouletteWheel({ spinning, finalIndex }: Props) {
   const size = 260;
   const radius = size / 2;
@@ -59,27 +50,17 @@ export function RouletteWheel({ spinning, finalIndex }: Props) {
 
   return (
     <div className="relative flex justify-center items-center">
-      {/* Needle */}
-      <div className="absolute -top-4 z-20">
-        <div
-          className="w-0 h-0 border-l-8 border-r-8 border-b-16
-          border-l-transparent border-r-transparent border-b-black"
-        />
-      </div>
-
       <svg
         width={size}
         height={size}
         viewBox={`0 0 ${size} ${size}`}
-        className="rounded-full border-8 border-black shadow-2xl bg-white"
+        className="rounded-full border-4 border-black shadow-2xl bg-white"
       >
-        {/* 🔑 ROTATING GROUP */}
+        {/* 🔄 Rotating wheel */}
         <motion.g
           animate={{ rotate: rotation }}
           transition={{ duration: 1.4, ease: "easeInOut" }}
-          style={{
-            transformOrigin: "50% 50%",
-          }}
+          style={{ transformOrigin: "50% 50%" }}
         >
           {ROULETTE_SEGMENTS.map((seg, i) => {
             const start = i * sliceAngle;
@@ -93,8 +74,6 @@ export function RouletteWheel({ spinning, finalIndex }: Props) {
             return (
               <g key={seg.key}>
                 <path d={describeArc(start, end)} fill={seg.color} />
-
-                {/* Label */}
                 <text
                   x={textX}
                   y={textY}
@@ -111,6 +90,18 @@ export function RouletteWheel({ spinning, finalIndex }: Props) {
             );
           })}
         </motion.g>
+
+        {/* ▲ Inner needle */}
+        <polygon
+          points={`
+      ${center - 6},${center - radius * 0.28 - 6}
+      ${center + 6},${center - radius * 0.28 - 6}
+      ${center},${center - radius * 0.28 - 18}
+    `}
+          fill="black"
+          filter="drop-shadow(0 1px 1px rgba(0,0,0,0.4))"
+          transform={`rotate(90 ${center} ${center})`}
+        />
 
         {/* Center cap */}
         <circle cx={center} cy={center} r={radius * 0.28} fill="white" />

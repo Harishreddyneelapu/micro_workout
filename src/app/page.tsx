@@ -3,10 +3,20 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { getStreakInfo } from "@/app/summary/streaks";
+type DashboardProps = {
+  searchParams: {
+    from?: string;
+  };
+};
 
-export default async function DashboardPage() {
+export default async function DashboardPage({ searchParams }: DashboardProps) {
   // ---------- AUTH ----------
   const session = await getAuthSession();
+  console.log("DashboardPage session:", session);
+  
+  const searchParamsPromise = await searchParams;
+  const justLoggedIn = searchParamsPromise.from === "login";
+
   if (!session) redirect("/login");
 
   const email = session.user?.email;
@@ -26,13 +36,21 @@ export default async function DashboardPage() {
 
   // ---------- UI ----------
   return (
-    <div className="space-y-8 max-w-5xl mx-auto">
+    <div className="space-y-8 max-w-5xl mx-auto mt-8">
       {/* Header */}
       <div className="flex flex-col gap-2">
-        <h1 className="text-3xl font-bold text-white">👋 Welcome back</h1>
-        <p className="text-white">
-          Logged in as{"   "}
-          <span className="font-medium text-white text-xl">{email}</span>
+        <h1 className="text-3xl font-bold text-white">
+          {justLoggedIn ? "👋 Welcome back" : "🏠 Dashboard"}
+        </h1>
+        {justLoggedIn && (
+          <p className="text-white">
+            Logged in as{"   "}
+            <span className="font-medium text-white text-xl">{email}</span>
+          </p>
+        )}
+
+        <p className="font-medium text-white text-xl">
+          All your progress in one place
         </p>
       </div>
 

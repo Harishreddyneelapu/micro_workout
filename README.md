@@ -1,4 +1,4 @@
-# 💪 Micro Workout Roulette
+# 💪 Micro Workout
 
 A full-stack fitness app that delivers **random 5–7 minute workouts** based on user preferences, with streaks, badges, and weekly analytics.
 

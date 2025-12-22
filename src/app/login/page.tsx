@@ -16,7 +16,7 @@ export default function LoginPage() {
     await signIn("credentials", {
       email,
       password,
-      callbackUrl: "/",
+      callbackUrl: "/dashboard?from=login",
     });
 
     setLoading(false);
@@ -29,7 +29,7 @@ export default function LoginPage() {
         backgroundImage: "url('/header.png')",
       }}
     >
-        <div className="absolute inset-0 bg-black/55 backdrop-blur-[0.5px]" />
+      <div className="absolute inset-0 bg-black/55 backdrop-blur-[0.5px]" />
 
       <form
         onSubmit={handleSubmit}

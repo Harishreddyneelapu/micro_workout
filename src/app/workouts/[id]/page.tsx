@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 
 type PageProps = {
@@ -29,7 +30,15 @@ export default async function WorkoutDetails({ params }: PageProps) {
   }
 
   return (
-    <div className="max-w-3xl mx-auto mt-12 space-y-8">
+    <div className="max-w-3xl mx-auto mt-12 space-y-4">
+      {/* 🔙 Back button */}
+      <Link
+        href="/workouts"
+        className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 text-white hover:bg-white/20 transition"
+      >
+        ← Back to workouts
+      </Link>
+
       <h1 className="text-3xl font-bold text-white">{workout.name}</h1>
 
       <div className="flex gap-4 text-white/80">

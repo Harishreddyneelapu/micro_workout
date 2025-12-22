@@ -26,10 +26,11 @@ export default function Sidebar() {
         backgroundImage: "url('/header.png')",
       }}
     >
-      {/* Scroll container */}
       <div className="h-full overflow-y-auto p-4 space-y-1">
         {links.map((link) => {
-          const active = pathname === link.href;
+          const active =
+            pathname === link.href ||
+            (link.href !== "/" && pathname.startsWith(link.href));
 
           return (
             <Link key={link.href} href={link.href}>

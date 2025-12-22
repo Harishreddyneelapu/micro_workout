@@ -28,81 +28,85 @@ export default function SummaryPage() {
   const prevBadgesRef = useRef<string[]>([]);
 
   useEffect(() => {
-  async function load() {
-    const summary = await getWeeklySummary();
-    const streakInfo = await getStreakInfo();
+    async function load() {
+      const summary = await getWeeklySummary();
+      const streakInfo = await getStreakInfo();
 
-    setData(summary);
-    setStreaks(streakInfo);
+      setData(summary);
+      setStreaks(streakInfo);
 
-    const prevBadges = prevBadgesRef.current;
+      const prevBadges = prevBadgesRef.current;
 
-    const newBadges = streakInfo.badges.filter(
-      (b) => !prevBadges.includes(b)
-    );
+      const newBadges = streakInfo.badges.filter(
+        (b) => !prevBadges.includes(b)
+      );
 
-    if (newBadges.length > 0) {
-      fireBigConfetti();
+      if (newBadges.length > 0) {
+        fireBigConfetti();
+      }
+
+      prevBadgesRef.current = streakInfo.badges;
     }
 
-    prevBadgesRef.current = streakInfo.badges;
-  }
-
-  load();
-}, []);
-
-
+    load();
+  }, []);
 
   if (!data) {
     return <p className="text-center mt-20">Loading summary…</p>;
   }
 
   return (
-    <div className="max-w-4xl mx-auto mt-16 space-y-10">
+    <div className="max-w-4xl mx-auto  space-y-10 mt-8">
       <h1 className="text-3xl font-bold text-center">📊 Weekly Summary</h1>
 
       {/* KPIs */}
       <div className="grid grid-cols-2 gap-6 text-center">
-        <div className="p-6 bg-white rounded-xl shadow">
-          <p className="text-gray-500">Workouts</p>
-          <p className="text-3xl font-bold text-black">{data.totalWorkouts}</p>
+        <div className="p-6 backdrop-blur-sm rounded-xl shadow border border-white/30 ">
+          <p className="text-gray-100">Workouts</p>
+          <p className="text-3xl font-bold text-white">{data.totalWorkouts}</p>
         </div>
 
-        <div className="p-6 bg-white rounded-xl shadow">
-          <p className="text-gray-500">Minutes</p>
-          <p className="text-3xl font-bold text-black">{data.totalMinutes}</p>
+        <div className="p-6 rounded-xl shadow border border-white/30 backdrop-blur-sm">
+          <p className="text-gray-100">Minutes</p>
+          <p className="text-3xl font-bold text-white">{data.totalMinutes}</p>
         </div>
       </div>
       {streaks && (
         <div className="grid grid-cols-3 gap-6 text-center">
-          <div className="p-4 bg-white rounded-xl shadow">
-            <p className="text-gray-500">Current Streak</p>
-            <p className="text-3xl font-bold text-black">{streaks.currentStreak} 🔥</p>
+          <div className="p-4 backdrop-blur-sm rounded-xl shadow border border-white/30">
+            <p className="text-gray-100">Current Streak</p>
+            <p className="text-3xl font-bold text-white">
+              {streaks.currentStreak} 🔥
+            </p>
           </div>
 
-          <div className="p-4 bg-white rounded-xl shadow">
-            <p className="text-gray-500">Best Streak</p>
-            <p className="text-3xl font-bold text-black">{streaks.bestStreak} 🏆</p>
+          <div className="p-4 backdrop-blur-sm rounded-xl shadow border border-white/30">
+            <p className="text-gray-100">Best Streak</p>
+            <p className="text-3xl font-bold text-white">
+              {streaks.bestStreak} 🏆
+            </p>
           </div>
 
-          <div className="p-4 bg-white rounded-xl shadow">
-            <p className="text-gray-500">Total Workouts</p>
-            <p className="text-3xl font-bold text-black">{streaks.totalWorkouts}</p>
+          <div className="p-4 backdrop-blur-sm rounded-xl shadow border border-white/30">
+            <p className="text-gray-100">Total Workouts</p>
+            <p className="text-3xl font-bold text-white">
+              {streaks.totalWorkouts}
+            </p>
           </div>
         </div>
       )}
       {streaks && streaks.badges.length > 0 && (
-        <div className="bg-white p-6 rounded-xl shadow">
-          <h2 className="font-semibold mb-3 text-black">🏅 Badges</h2>
+        <div className="backdrop-blur-sm p-6 rounded-xl shadow border border-white/30">
+          <h2 className="font-semibold mb-3 text-white">🏅 Badges</h2>
           <div className="flex flex-wrap gap-3">
             {streaks.badges.map((badge) => (
               <motion.span
-  whileHover={{ scale: 1.1 }}
-  key={badge}
-  className="px-3 py-1 rounded-full bg-indigo-100 text-indigo-700 text-sm"
->
-  {badge}
-</motion.span>
+                whileHover={{ scale: 1.1 }}
+                key={badge}
+                className="px-3 py-1 rounded-full bg-indigo-100 text-indigo-700 text-sm"
+              >
+                {badge}
+              </motion.span>
             ))}
           </div>
         </div>

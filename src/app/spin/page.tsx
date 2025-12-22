@@ -56,7 +56,7 @@ export default function SpinPage() {
   }
 
   return (
-    <div className="max-w-3xl mx-auto mt-16 space-y-10">
+    <div className="max-w-3xl mx-auto mt-8 space-y-10">
       {/* Header */}
       <div className="text-center space-y-2">
         <h1 className="text-4xl font-extrabold text-white">
@@ -164,7 +164,7 @@ export default function SpinPage() {
                 onClick={handleComplete}
                 className="px-6 py-3 rounded-xl bg-green-600 text-white font-semibold shadow"
               >
-                ✅ Mark Completed
+                 Mark Completed
               </motion.button>
             </div>
           </motion.div>
