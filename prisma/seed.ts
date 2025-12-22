@@ -1,4 +1,5 @@
 import { prisma } from "../src/lib/prisma";
+import crypto from "crypto";
 
 /**
  * Incremental seed
@@ -8,102 +9,126 @@ async function main() {
   console.log("🌱 Seeding exercises, workouts, and links...");
 
   // ---------- EXERCISES ----------
-  await prisma.exercise.createMany({
-    data: [
-      {
+  const exercisesData = [
+    {
+      name: "Lunges",
+      muscleGroup: "legs",
+      instructions:
+        "Step forward, lower back knee toward floor, then push back. Alternate legs.",
+    },
+    {
+      name: "Burpees",
+      muscleGroup: "full-body",
+      instructions:
+        "Squat down, kick feet to plank, return to squat, then jump explosively upward.",
+    },
+    {
+      name: "High Knees",
+      muscleGroup: "full-body",
+      instructions:
+        "Run in place lifting knees toward chest. Keep core tight and land softly.",
+    },
+    {
+      name: "Glute Bridges",
+      muscleGroup: "legs",
+      instructions:
+        "Lie on back, knees bent. Drive hips upward by squeezing glutes, then lower slowly.",
+    },
+    {
+      name: "Wall Sit",
+      muscleGroup: "legs",
+      instructions:
+        "Lean against wall with knees at 90°. Hold while keeping back flat.",
+    },
+    {
+      name: "Bicycle Crunches",
+      muscleGroup: "core",
+      instructions:
+        "Alternate elbow-to-opposite-knee while extending the other leg.",
+    },
+    {
+      name: "Arm Circles",
+      muscleGroup: "arms",
+      instructions:
+        "Extend arms sideways and make small controlled circles. Reverse halfway.",
+    },
+    {
+      name: "Push-ups",
+      muscleGroup: "chest",
+      instructions:
+        "Keep your body straight, lower chest to floor, then push back up.",
+    },
+    {
+      name: "Mountain Climbers",
+      muscleGroup: "core",
+      instructions:
+        "From plank, alternate driving knees toward chest at a fast pace.",
+    },
+    {
+      name: "Jumping Jacks",
+      muscleGroup: "full-body",
+      instructions:
+        "Jump while spreading arms and legs, then return to starting position.",
+    },
+  ];
+
+  for (const ex of exercisesData) {
+    await prisma.exercise.upsert({
+      where: { name: ex.name },
+      update: {},
+      create: {
         id: crypto.randomUUID(),
-        name: "Lunges",
-        muscleGroup: "legs",
-        instructions:
-          "Step forward, lower back knee toward floor, then push back. Alternate legs.",
+        ...ex,
       },
-      {
-        id: crypto.randomUUID(),
-        name: "Burpees",
-        muscleGroup: "full-body",
-        instructions:
-          "Squat down, kick feet to plank, return to squat, then jump explosively upward.",
-      },
-      {
-        id: crypto.randomUUID(),
-        name: "High Knees",
-        muscleGroup: "full-body",
-        instructions:
-          "Run in place lifting knees toward chest. Keep core tight and land softly.",
-      },
-      {
-        id: crypto.randomUUID(),
-        name: "Glute Bridges",
-        muscleGroup: "legs",
-        instructions:
-          "Lie on back, knees bent. Drive hips upward by squeezing glutes, then lower slowly.",
-      },
-      {
-        id: crypto.randomUUID(),
-        name: "Wall Sit",
-        muscleGroup: "legs",
-        instructions:
-          "Lean against wall with knees at 90°. Hold while keeping back flat.",
-      },
-      {
-        id: crypto.randomUUID(),
-        name: "Bicycle Crunches",
-        muscleGroup: "core",
-        instructions:
-          "Alternate elbow-to-opposite-knee while extending the other leg.",
-      },
-      {
-        id: crypto.randomUUID(),
-        name: "Arm Circles",
-        muscleGroup: "arms",
-        instructions:
-          "Extend arms sideways and make small controlled circles. Reverse halfway.",
-      },
-    ],
-    skipDuplicates: true,
-  });
+    });
+  }
 
   // ---------- WORKOUTS ----------
-  await prisma.workout.createMany({
-    data: [
-      {
-        name: "7-Min Leg Blast",
-        difficulty: "easy",
-        targetMuscle: "legs",
-        durationMinutes: 7,
-        equipment: "none",
-      },
-      {
-        name: "5-Min Cardio Burn",
-        difficulty: "hard",
-        targetMuscle: "full-body",
-        durationMinutes: 5,
-        equipment: "none",
-      },
-      {
-        name: "6-Min Upper Body Quickie",
-        difficulty: "medium",
-        targetMuscle: "arms",
-        durationMinutes: 6,
-        equipment: "none",
-      },
-      {
-        name: "7-Min Core & Cardio",
-        difficulty: "medium",
-        targetMuscle: "core",
-        durationMinutes: 7,
-        equipment: "none",
-      },
-      {
-        name: "5-Min No-Equipment Express",
-        difficulty: "easy",
-        targetMuscle: "full-body",
-        durationMinutes: 5,
-        equipment: "none",
-      },
-    ],
-    skipDuplicates: true,
-  });
+  const workoutsData = [
+    {
+      name: "7-Min Leg Blast",
+      difficulty: "easy",
+      targetMuscle: "legs",
+      durationMinutes: 7,
+      equipment: "none",
+    },
+    {
+      name: "5-Min Cardio Burn",
+      difficulty: "hard",
+      targetMuscle: "full-body",
+      durationMinutes: 5,
+      equipment: "none",
+    },
+    {
+      name: "6-Min Upper Body Quickie",
+      difficulty: "medium",
+      targetMuscle: "arms",
+      durationMinutes: 6,
+      equipment: "none",
+    },
+    {
+      name: "7-Min Core & Cardio",
+      difficulty: "medium",
+      targetMuscle: "core",
+      durationMinutes: 7,
+      equipment: "none",
+    },
+    {
+      name: "5-Min No-Equipment Express",
+      difficulty: "easy",
+      targetMuscle: "full-body",
+      durationMinutes: 5,
+      equipment: "none",
+    },
+  ];
+
+  for (const w of workoutsData) {
+    await prisma.workout.upsert({
+      where: { name: w.name },
+      update: {},
+      create: w,
+    });
+  }
 
   // ---------- FETCH HELPERS ----------
   const exercises = await prisma.exercise.findMany();
@@ -111,13 +136,13 @@ async function main() {
 
   const getExercise = (name: string) => {
     const e = exercises.find((x) => x.name === name);
-    if (!e) throw new Error(`Exercise not found: ${name}`);
+    if (!e) throw new Error(`Exercise not found after seed: ${name}`);
     return e;
   };
 
   const getWorkout = (name: string) => {
     const w = workouts.find((x) => x.name === name);
-    if (!w) throw new Error(`Workout not found: ${name}`);
+    if (!w) throw new Error(`Workout not found after seed: ${name}`);
     return w;
   };
 
