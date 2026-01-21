@@ -1,10 +1,9 @@
 name: Storybook CI
 
 on:
-  pull_request:
   push:
-    branches:
-      - main
+    branches: [main]
+  pull_request:
 
 jobs:
   storybook:
@@ -14,19 +13,27 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      # 1️⃣ Node MUST be installed first
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: "pnpm"
 
+      # 2️⃣ Install pnpm
       - name: Install pnpm
         uses: pnpm/action-setup@v3
         with:
           version: 10
+          run_install: false
 
+      # 3️⃣ Verify pnpm is available (this catches the issue early)
+      - name: Verify pnpm
+        run: pnpm --version
+
+      # 4️⃣ Install dependencies
       - name: Install dependencies
         run: pnpm install
 
+      # 5️⃣ Build Storybook
       - name: Build Storybook
         run: pnpm build-storybook
