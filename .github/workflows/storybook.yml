@@ -19,7 +19,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Setup Node.js
@@ -27,13 +27,19 @@ jobs:
         with:
           node-version: 20
 
-      # 🔑 CRITICAL STEP (fixes your failure)
+      # ✅ Enable Corepack (required for pnpm on Node 20)
       - name: Enable Corepack
         run: corepack enable
 
-      - name: Install pnpm
+      # ✅ Activate pnpm explicitly
+      - name: Activate pnpm
         run: corepack prepare pnpm@10.0.0 --activate
 
+      # ✅ IMPORTANT: verify we're in repo root
+      - name: Show project files
+        run: ls -la
+
+      # ✅ pnpm now works because package.json exists
       - name: Verify pnpm
         run: pnpm --version
 
@@ -51,6 +57,7 @@ jobs:
   deploy:
     needs: build
     runs-on: ubuntu-latest
+
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
