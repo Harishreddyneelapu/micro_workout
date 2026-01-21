@@ -19,37 +19,38 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      # 1️⃣ Checkout repository
+      - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
+      # 2️⃣ Setup Node.js
+      - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 20
 
-      # ✅ Enable Corepack (required for pnpm on Node 20)
+      # 3️⃣ Enable Corepack (required for pnpm)
       - name: Enable Corepack
         run: corepack enable
 
-      # ✅ Activate pnpm explicitly
+      # 4️⃣ Activate pnpm explicitly
       - name: Activate pnpm
         run: corepack prepare pnpm@10.0.0 --activate
 
-      # ✅ IMPORTANT: verify we're in repo root
-      - name: Show project files
-        run: ls -la
-
-      # ✅ pnpm now works because package.json exists
+      # 5️⃣ Sanity check
       - name: Verify pnpm
         run: pnpm --version
 
+      # 6️⃣ Install dependencies
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      # 7️⃣ Build Storybook
       - name: Build Storybook
         run: pnpm build-storybook
 
-      - name: Upload Storybook artifact
+      # 8️⃣ Upload Storybook artifact
+      - name: Upload Storybook
         uses: actions/upload-pages-artifact@v3
         with:
           path: storybook-static
@@ -63,6 +64,7 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
 
     steps:
-      - name: Deploy to GitHub Pages
+      # 9️⃣ Deploy to GitHub Pages
+      - name: Deploy
         id: deployment
         uses: actions/deploy-pages@v4
