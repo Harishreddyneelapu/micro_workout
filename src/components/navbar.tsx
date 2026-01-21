@@ -13,7 +13,7 @@ export default function Navbar({ session }: Props) {
     <header
       className="sticky top-0 z-50 border-b shadow-sm backdrop-blur-md"
       style={{
-        backgroundImage: "url('/header.png')",
+        backgroundImage: "url('header.png')",
       }}
     >
       <div className="flex items-center justify-between px-6 py-4 mx-20">
