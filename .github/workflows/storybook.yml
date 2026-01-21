@@ -19,38 +19,29 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1️⃣ Checkout repository
-      - name: Checkout
+      - name: Checkout repo
         uses: actions/checkout@v4
 
-      # 2️⃣ Setup Node.js
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 20
 
-      # 3️⃣ Enable Corepack (required for pnpm)
-      - name: Enable Corepack
-        run: corepack enable
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 10
 
-      # 4️⃣ Activate pnpm explicitly
-      - name: Activate pnpm
-        run: corepack prepare pnpm@10.0.0 --activate
-
-      # 5️⃣ Sanity check
       - name: Verify pnpm
         run: pnpm --version
 
-      # 6️⃣ Install dependencies
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      # 7️⃣ Build Storybook
       - name: Build Storybook
         run: pnpm build-storybook
 
-      # 8️⃣ Upload Storybook artifact
-      - name: Upload Storybook
+      - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: storybook-static
@@ -58,13 +49,11 @@ jobs:
   deploy:
     needs: build
     runs-on: ubuntu-latest
-
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
 
     steps:
-      # 9️⃣ Deploy to GitHub Pages
-      - name: Deploy
+      - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
