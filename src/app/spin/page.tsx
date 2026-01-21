@@ -15,6 +15,7 @@ export default function SpinPage() {
   const [isPending, startTransition] = useTransition();
   const [spinning, setSpinning] = useState(false);
   const [finalIndex, setFinalIndex] = useState<number | null>(null);
+  const [isCompleted, setIsCompleted] = useState(false);
 
   function handleSpin() {
     if (spinning) return;
@@ -49,7 +50,7 @@ export default function SpinPage() {
 
     await markWorkoutCompleted(result.workout.id);
     fireConfetti();
-
+    setIsCompleted(true);
     setTimeout(() => {
       setResult(null);
     }, 900);
@@ -163,6 +164,7 @@ export default function SpinPage() {
                 whileTap={{ scale: 0.95 }}
                 onClick={handleComplete}
                 className="px-6 py-3 rounded-xl bg-green-600 text-white font-semibold shadow"
+                disabled={isCompleted}
               >
                  Mark Completed
               </motion.button>

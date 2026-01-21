@@ -1,8 +1,14 @@
 "use client";
 
-import { signOut } from "next-auth/react";
+import { signOut as realSignOut } from "next-auth/react";
 
 export default function LogoutButton() {
+  const signOut =
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (typeof window !== "undefined" &&
+      (window as any).__NEXTAUTH_SIGNOUT__) ||
+    realSignOut;
+
   return (
     <button
       onClick={() => signOut({ callbackUrl: "/login" })}
