@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import AccountMenu from "./AccountMenu";
 
 const meta: Meta<typeof AccountMenu> = {
-  title: "Components/AccountMenu",
+  title: "layout/AccountMenu",
   component: AccountMenu,
   tags: ["autodocs"],
   parameters: {

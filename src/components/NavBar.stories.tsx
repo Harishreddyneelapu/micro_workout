@@ -18,6 +18,7 @@ const mockSession: Session = {
 const meta: Meta<typeof Navbar> = {
   title: "Components/Navbar",
   component: Navbar,
+  
   parameters: {
     layout: "fullscreen",
     nextjs: {

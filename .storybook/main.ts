@@ -7,7 +7,7 @@ const __dirname = path.dirname(__filename);
 
 const config: StorybookConfig = {
   stories: ["../src/**/*.stories.@(js|jsx|ts|tsx)"],
-  addons: [],
+  addons: ["@storybook/addon-essentials"],
   framework: "@storybook/nextjs-vite",
   staticDirs: ["../public"],
 
